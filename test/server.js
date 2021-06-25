@@ -53,4 +53,31 @@ describe('RestAPI tests', function() {
             done();
         });
     });
+    
+    // test list all the assets of the account
+    it('List assets testing...', function(done) {
+        request(app)
+        .get('/assets?accountId=65e5f451-54e3-45ea-84e9-dcdd8c59078e')
+        .set({ "x-access-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI2MGQ0NWRmZGFjZGJlYjAwMjA0OGMwMTMifQ.6Z2d-GtiKUo4EeuDbsS5_97dbAG09jVKxW_55QDcTOA" })
+        .expect(200)
+        .end(function(err, res) {
+            expect(res.body.result).equal(true)
+            done();
+        });
+    });
+
+    // test activate an assets of the account
+    it('Activate an asset testing...', function(done) {
+        request(app)
+        .put('/assets/sagarn.neupane1/subscribe')
+        .set({ "x-access-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI2MGQ0NWRmZGFjZGJlYjAwMjA0OGMwMTMifQ.6Z2d-GtiKUo4EeuDbsS5_97dbAG09jVKxW_55QDcTOA" })
+        .send({
+            accountId: "65e5f451-54e3-45ea-84e9-dcdd8c59078e",
+        })
+        .expect(200)
+        .end(function(err, res) {
+            expect(res.body.result).equal(true)
+            done();
+        });
+    });
 })

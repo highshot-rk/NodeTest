@@ -1,6 +1,7 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const axios = require("axios")
+const async = require("async");
 const URL = "https://hummingbird-staging.podgroup.com"
 const NetError = {
     result: false,
@@ -107,6 +108,110 @@ server.post("/users", (req, res) => {
     }
 });
 
+// Create a method to list all the assets of the account
+// assets (token, accountId)
+server.get("/assets", (req, res) => {
+    var accountId = req.query.accountId ? req.query.accountId : "";
+    var token = req.headers["x-access-token"] ? req.headers["x-access-token"] : "";
+
+    if (accountId === "") {
+        res.json({
+            "result": false,
+            "msg": "fill the parameters"
+        });
+    } else {
+        axios.get(`https://hummingbird-staging.podgroup.com/assets?accountId=${accountId}`, {
+            headers: {
+                "x-access-token": token
+            }
+        }).then(res1 => {
+            res.json({
+                result: true,
+                ...res1.data,
+            })
+        }).catch(err => {
+            res.json({
+                "result": false,
+                "status": err.response.status,
+                "statusText": err.response.statusText,
+                "statusMessage": err.response.data.message,
+            })
+        })
+    }
+});
+
+// Create a method to activate an asset
+// put-assets(iccid, accountId)
+server.put("/assets/:iccid/subscribe", (req, res) => {
+    var iccid = req.params.iccid ? req.params.iccid : "";
+    var token = req.headers["x-access-token"] ? req.headers["x-access-token"] : "";
+    var accountId = req.body.accountId ? req.body.accountId : "";
+
+    if (accountId === "" || iccid == "") {
+        res.json({
+            "result": false,
+            "msg": "fill the parameters"
+        });
+    } else {
+        
+        axios.get(`https://hummingbird-staging.podgroup.com/products?accountId=${accountId}`, {
+            headers: {
+                "x-access-token": token
+            }
+        }).then(res1 => {
+            var products = res1.data;
+
+            var result = [];
+            async.forEachOf(products, (product, id, callback) => {
+                axios.put(`https://hummingbird-staging.podgroup.com/assets/${iccid}/subscribe`, {
+                    accountId: accountId,
+                    subscription: {
+                        subscriberAccountId: accountId,
+                        productId: product._id,
+                    }
+                },{
+                    headers: {
+                        "x-access-token": token
+                    }
+                }).then(res2 => {
+                    result.push(res2.data)
+
+                    return callback();
+                }).catch(err => {
+                    return callback();
+                })
+            }, err => {
+                if (err) {
+                    console.log(err)
+                    res.json({
+                        "result": false
+                    });
+                } else {
+                    res.json({
+                        "result": true,
+                        "assets": result
+                    })
+                }
+            })
+        }).catch(err => {
+            console.log(err)
+            if (err.response) {
+                res.json({
+                    "result": false,
+                    "status": err.response.status,
+                    "statusText": err.response.statusText,
+                    "statusMessage": err.response.data.message,
+                })
+            } else {
+                res.json({
+                    "result": false,
+                    "status": "---",
+                    "statusText": "Unknown",
+                })
+            }
+        })
+    }
+});
 
 // run server
 server.listen(3000, () => {
