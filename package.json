@@ -1,0 +1,34 @@
+{
+  "name": "nodetest",
+  "version": "1.0.0",
+  "description": "Antonio test",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/highshot-rk/NodeTest.git"
+  },
+  "keywords": [
+    "node",
+    "postman",
+    "test",
+    "mocha"
+  ],
+  "author": "rk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/highshot-rk/NodeTest/issues"
+  },
+  "homepage": "https://github.com/highshot-rk/NodeTest#readme",
+  "dependencies": {
+    "async": "^3.2.0",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "eslint": "^7.29.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
+  }
+}
