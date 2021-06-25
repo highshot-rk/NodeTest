@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
+    "lint": "./node_modules/.bin/eslint --init",
+    "lint-fix": "eslint --fix *.js  --ext *.js",
     "test": "npm test"
   },
   "repository": {
@@ -27,8 +29,10 @@
     "async": "^3.2.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
-    "eslint": "^7.29.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.7"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0"
   }
 }
